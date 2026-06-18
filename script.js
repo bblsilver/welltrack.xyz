@@ -12,8 +12,10 @@ const arrowSvgBase64 = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy
 function enterApp() {
     document.getElementById("welcomeOverlay").style.display = "none";
     document.getElementById("appContainer").classList.remove("app-blurred");
-    loadGlobalHabits();
     renderMonthView(currentYear, currentMonth);
+    setTimeout(() => {
+        loadGlobalHabits();
+    }, 50);
 }
 
 function renderMonthView(year, month) {
@@ -21,15 +23,21 @@ function renderMonthView(year, month) {
     currentMonth = month;
     
     const viewContainer = document.getElementById("monthView");
-    viewContainer.classList.remove("view-fade");
-    void viewContainer.offsetWidth;
-    viewContainer.classList.add("view-fade");
+    if (viewContainer) {
+        viewContainer.classList.remove("view-fade");
+        void viewContainer.offsetWidth;
+        viewContainer.classList.add("view-fade");
+        viewContainer.style.display = "block";
+    }
 
-    document.getElementById("yearView").style.display = "none";
-    viewContainer.style.display = "block";
-    document.getElementById("currentMonthYear").innerText = `${monthsArray[month]} ${year}`;
+    const yearView = document.getElementById("yearView");
+    if (yearView) yearView.style.display = "none";
+
+    const titleEl = document.getElementById("currentMonthYear");
+    if (titleEl) titleEl.innerText = `${monthsArray[month]} ${year}`;
 
     const grid = document.getElementById("calendarGrid");
+    if (!grid) return;
     grid.innerHTML = "";
 
     const totalDays = new Date(year, month + 1, 0).getDate();
@@ -73,6 +81,7 @@ function getColorByRating(rating) {
 function toggleCalendarView() {
     const yearView = document.getElementById("yearView");
     const monthView = document.getElementById("monthView");
+    if (!yearView || !monthView) return;
 
     if (yearView.style.display === "none") {
         monthView.style.display = "none";
@@ -90,6 +99,7 @@ function toggleCalendarView() {
 
 function renderYearView() {
     const yearGrid = document.getElementById("yearView");
+    if (!yearGrid) return;
     yearGrid.innerHTML = "";
 
     monthsArray.forEach((monthName, index) => {
@@ -106,6 +116,7 @@ function openDayModal(dateKey) {
     document.getElementById("modalDayTitle").innerText = `Log Health for ${dateKey}`;
     
     const slider = document.getElementById("dayRating");
+    if (!slider) return;
     slider.value = 5;
     
     const ratingValueDisplay = document.getElementById("ratingValue");
@@ -157,12 +168,13 @@ function closeDayModal() {
 
 function renderModalChecklist() {
     const container = document.getElementById("modalChecklist");
+    if (!container) return;
     container.innerHTML = "";
 
     const globalHabits = JSON.parse(localStorage.getItem("globalHabits") || "[]");
     
     if (globalHabits.length === 0) {
-        container.innerHTML = "<p style='font-size:0.9rem; color:#666;'>No daily habits added yet. Use the tool on the dashboard.</p>";
+        container.innerHTML = "<p style='font-size:0.9rem; color:#666;'>No daily habits added yet.</p>";
         return;
     }
 
@@ -217,6 +229,7 @@ function saveDayLog() {
 
 function addGlobalHabit() {
     const input = document.getElementById("newHabitInput");
+    if (!input) return;
     const text = input.value.trim();
     if (!text) return;
 
@@ -235,6 +248,7 @@ function addGlobalHabit() {
 
 function loadGlobalHabits(newlyAddedId = null) {
     const list = document.getElementById("globalHabitList");
+    if (!list) return;
     list.innerHTML = "";
 
     const globalHabits = JSON.parse(localStorage.getItem("globalHabits") || "[]");
@@ -277,14 +291,3 @@ function loadGlobalHabits(newlyAddedId = null) {
 function removeGlobalHabit(id) {
     const element = document.getElementById(id);
     if (element) {
-        element.classList.add("fade-out-item");
-        setTimeout(() => {
-            executeHabitRemoval(id);
-        }, 300);
-    } else {
-        executeHabitRemoval(id);
-    }
-}
-
-function executeHabitRemoval(id) {
-    let globalHabits = JSON.parse(localStorage.getItem("globalHabits") || "[]");
