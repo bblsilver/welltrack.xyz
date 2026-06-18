@@ -16,18 +16,13 @@ function enterApp() {
     renderMonthView(currentYear, currentMonth);
 }
 
-function updateSliderFill(slider) {
-    const val = ((slider.value - slider.min) / (slider.max - slider.min)) * 100;
-    slider.style.setProperty('--slider-progress', val + '%');
-}
-
 function renderMonthView(year, month) {
     currentYear = year;
     currentMonth = month;
     
     const viewContainer = document.getElementById("monthView");
     viewContainer.classList.remove("view-fade");
-    void viewContainer.offsetWidth; // Trigger reflow for animation reset
+    void viewContainer.offsetWidth;
     viewContainer.classList.add("view-fade");
 
     document.getElementById("yearView").style.display = "none";
@@ -112,13 +107,17 @@ function openDayModal(dateKey) {
     
     const slider = document.getElementById("dayRating");
     slider.value = 5;
-    document.getElementById("ratingValue").innerText = 5;
-    updateSliderFill(slider);
     
-    // Add dynamically tracked event listeners for on-the-fly line fills
+    const ratingValueDisplay = document.getElementById("ratingValue");
+    if (ratingValueDisplay) {
+        ratingValueDisplay.innerText = 5;
+    }
+    
     slider.oninput = function() {
-        document.getElementById('ratingValue').innerText = this.value;
-        updateSliderFill(this);
+        const display = document.getElementById('ratingValue');
+        if (display) {
+            display.innerText = this.value;
+        }
     };
 
     document.getElementById("dayNotes").value = "";
@@ -129,8 +128,9 @@ function openDayModal(dateKey) {
         const parsed = JSON.parse(savedData);
         if (parsed.rating !== undefined) {
             slider.value = parsed.rating;
-            document.getElementById("ratingValue").innerText = parsed.rating;
-            updateSliderFill(slider);
+            if (ratingValueDisplay) {
+                ratingValueDisplay.innerText = parsed.rating;
+            }
         }
         if (parsed.notes) {
             document.getElementById("dayNotes").value = parsed.notes;
@@ -181,7 +181,6 @@ function renderModalChecklist() {
         label.appendChild(box);
         label.appendChild(customSpan);
         
-        // Add custom checklist arrow right in front of the text description
         const arrowImg = document.createElement("img");
         arrowImg.className = "checklist-arrow";
         arrowImg.src = arrowSvgBase64;
@@ -243,7 +242,6 @@ function loadGlobalHabits(newlyAddedId = null) {
         const li = document.createElement("li");
         li.id = habit.id;
 
-        // Apply visual fade-in animation trigger for fresh items
         if (habit.id === newlyAddedId) {
             li.className = "fade-in-item";
         }
@@ -279,3 +277,14 @@ function loadGlobalHabits(newlyAddedId = null) {
 function removeGlobalHabit(id) {
     const element = document.getElementById(id);
     if (element) {
+        element.classList.add("fade-out-item");
+        setTimeout(() => {
+            executeHabitRemoval(id);
+        }, 300);
+    } else {
+        executeHabitRemoval(id);
+    }
+}
+
+function executeHabitRemoval(id) {
+    let globalHabits = JSON.parse(localStorage.getItem("globalHabits") || "[]");
