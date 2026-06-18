@@ -7,56 +7,34 @@ const monthsArray = [
     "July", "August", "September", "October", "November", "December"
 ];
 
-const arrowSvgBase64 = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTguNSA1bDYgNi02IDZaIiBmaWxsPSIjZmY5OTk5IiBzdHJva2U9IiNmZjk5OTkiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9zdmc+";
-
 function enterApp() {
-    const overlay = document.getElementById("welcomeOverlay");
-    const container = document.getElementById("appContainer");
-    if (overlay) overlay.style.display = "none";
-    if (container) container.classList.remove("app-blurred");
+    document.getElementById("welcomeOverlay").style.display = "none";
+    document.getElementById("appContainer").classList.remove("app-blurred");
+    loadGlobalHabits();
     renderMonthView(currentYear, currentMonth);
-    setTimeout(loadGlobalHabits, 50);
 }
 
 function renderMonthView(year, month) {
     currentYear = year;
     currentMonth = month;
     
-    const viewContainer = document.getElementById("monthView");
-    if (viewContainer) {
-        viewContainer.classList.remove("view-fade");
-        void viewContainer.offsetWidth;
-        viewContainer.classList.add("view-fade");
-        viewContainer.style.display = "block";
-    }
-
-    const yearView = document.getElementById("yearView");
-    if (yearView) yearView.style.display = "none";
-
-    const titleEl = document.getElementById("currentMonthYear");
-    if (titleEl) titleEl.innerText = `${monthsArray[month]} ${year}`;
+    document.getElementById("yearView").style.display = "none";
+    document.getElementById("monthView").style.display = "block";
+    document.getElementById("currentMonthYear").innerText = `${monthsArray[month]} ${year}`;
 
     const grid = document.getElementById("calendarGrid");
-    if (!grid) return;
     grid.innerHTML = "";
 
     const totalDays = new Date(year, month + 1, 0).getDate();
-    const today = new Date();
-    const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
 
     for (let day = 1; day <= totalDays; day++) {
         const dayCell = document.createElement("div");
         dayCell.className = "day-cell";
+        dayCell.innerText = day;
 
         const dateKey = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-        
-        let cellHTML = `<span class="day-number">${day}</span>`;
-        if (dateKey === todayKey) {
-            cellHTML += `<img class="today-star" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTEyIC41ODdsMy42NjggNy40MzEgOC4yIDEuMTkyLTUuOTM0IDUuNzg1IDEuNCA4LjE2OEwxMiAxOC44OTZsLTcuMzM0IDMuODU3IDEuNC04LjE2OEwuMTMyIDkuNDFsOC4yLTEuMTkyeiIgZmlsbD0iI2ZmYjNiMyIvPjwvc3ZnPg==" alt="Today">`;
-        }
-        dayCell.innerHTML = cellHTML;
-
         const savedData = localStorage.getItem(dateKey);
+        
         if (savedData) {
             const parsed = JSON.parse(savedData);
             if (parsed.rating !== undefined && parsed.rating !== "") {
@@ -81,14 +59,10 @@ function getColorByRating(rating) {
 function toggleCalendarView() {
     const yearView = document.getElementById("yearView");
     const monthView = document.getElementById("monthView");
-    if (!yearView || !monthView) return;
 
     if (yearView.style.display === "none") {
         monthView.style.display = "none";
         yearView.style.display = "grid";
-        yearView.classList.remove("view-fade");
-        void yearView.offsetWidth;
-        yearView.classList.add("view-fade");
         renderYearView();
     } else {
         yearView.style.display = "none";
@@ -99,7 +73,6 @@ function toggleCalendarView() {
 
 function renderYearView() {
     const yearGrid = document.getElementById("yearView");
-    if (!yearGrid) return;
     yearGrid.innerHTML = "";
 
     monthsArray.forEach((monthName, index) => {
@@ -113,89 +86,65 @@ function renderYearView() {
 
 function openDayModal(dateKey) {
     selectedDateKey = dateKey;
+    document.getElementById("modalDayTitle").innerText = `Log Health for ${dateKey}`;
     
-    const title = document.getElementById("modalDayTitle");
-    if (title) title.innerText = `Log Health for ${dateKey}`;
-    
-    const slider = document.getElementById("dayRating");
-    if (!slider) return;
-    slider.value = 5;
-    
-    const display = document.getElementById("ratingValue");
-    if (display) display.innerText = 5;
-    
-    slider.oninput = function() {
-        const valDisplay = document.getElementById('ratingValue');
-        if (valDisplay) valDisplay.innerText = this.value;
-    };
+    document.getElementById("dayRating").value = 5;
+    document.getElementById("ratingValue").innerText = 5;
+    document.getElementById("dayNotes").value = "";
 
-    const notes = document.getElementById("dayNotes");
-    if (notes) notes.value = "";
-    
     renderModalChecklist();
 
     const savedData = localStorage.getItem(dateKey);
     if (savedData) {
         const parsed = JSON.parse(savedData);
         if (parsed.rating !== undefined) {
-            slider.value = parsed.rating;
-            if (display) display.innerText = parsed.rating;
+            document.getElementById("dayRating").value = parsed.rating;
+            document.getElementById("ratingValue").innerText = parsed.rating;
         }
-        if (parsed.notes && notes) {
-            notes.value = parsed.notes;
+        if (parsed.notes) {
+            document.getElementById("dayNotes").value = parsed.notes;
         }
         if (parsed.habits) {
-            setTimeout(() => {
-                const checks = document.querySelectorAll(".modal-habit-check");
-                checks.forEach(box => {
-                    const id = box.getAttribute("data-id");
-                    if (parsed.habits[id]) box.checked = true;
-                });
-            }, 10);
+            const checks = document.querySelectorAll(".modal-habit-check");
+            checks.forEach(box => {
+                const id = box.getAttribute("data-id");
+                if (parsed.habits[id]) {
+                    box.checked = true;
+                }
+            });
         }
     }
 
-    const modal = document.getElementById("dayModal");
-    if (modal) modal.style.display = "flex";
+    document.getElementById("dayModal").style.display = "flex";
 }
 
 function closeDayModal() {
-    const modal = document.getElementById("dayModal");
-    if (modal) modal.style.display = "none";
+    document.getElementById("dayModal").style.display = "none";
 }
 
 function renderModalChecklist() {
     const container = document.getElementById("modalChecklist");
-    if (!container) return;
     container.innerHTML = "";
 
     const globalHabits = JSON.parse(localStorage.getItem("globalHabits") || "[]");
+    
     if (globalHabits.length === 0) {
-        container.innerHTML = "<p style='font-size:0.9rem; color:#666;'>No daily habits added yet.</p>";
+        container.innerHTML = "<p style='font-size:0.9rem; color:#666;'>No daily habits added yet. Use the tool on the dashboard.</p>";
         return;
     }
 
     globalHabits.forEach(habit => {
         const label = document.createElement("label");
-        label.className = "modal-habit-label";
+        label.style.display = "block";
+        label.style.marginBottom = "5px";
 
         const box = document.createElement("input");
         box.type = "checkbox";
         box.className = "modal-habit-check";
         box.setAttribute("data-id", habit.id);
 
-        const customSpan = document.createElement("span");
-        customSpan.className = "custom-checkbox";
-
         label.appendChild(box);
-        label.appendChild(customSpan);
-        
-        const arrowImg = document.createElement("img");
-        arrowImg.className = "checklist-arrow";
-        arrowImg.src = arrowSvgBase64;
-        
-        label.appendChild(arrowImg);
-        label.appendChild(document.createTextNode(habit.text));
+        label.appendChild(document.createTextNode(` ${habit.text}`));
         container.appendChild(label);
     });
 }
@@ -203,10 +152,8 @@ function renderModalChecklist() {
 function saveDayLog() {
     if (!selectedDateKey) return;
 
-    const slider = document.getElementById("dayRating");
-    const notes = document.getElementById("dayNotes");
-    const rating = slider ? slider.value : 5;
-    const notesValue = notes ? notes.value : "";
+    const rating = document.getElementById("dayRating").value;
+    const notes = document.getElementById("dayNotes").value;
     const habits = {};
 
     const checks = document.querySelectorAll(".modal-habit-check");
@@ -217,7 +164,7 @@ function saveDayLog() {
 
     const dataToSave = {
         rating: rating,
-        notes: notesValue,
+        notes: notes,
         habits: habits
     };
 
@@ -228,7 +175,6 @@ function saveDayLog() {
 
 function addGlobalHabit() {
     const input = document.getElementById("newHabitInput");
-    if (!input) return;
     const text = input.value.trim();
     if (!text) return;
 
@@ -241,46 +187,40 @@ function addGlobalHabit() {
     globalHabits.push(newHabit);
     localStorage.setItem("globalHabits", JSON.stringify(globalHabits));
     input.value = "";
-    loadGlobalHabits(newHabit.id);
+    
+    loadGlobalHabits();
 }
 
-function loadGlobalHabits(newlyAddedId = null) {
+function loadGlobalHabits() {
     const list = document.getElementById("globalHabitList");
-    if (!list) return;
     list.innerHTML = "";
 
     const globalHabits = JSON.parse(localStorage.getItem("globalHabits") || "[]");
     globalHabits.forEach(habit => {
         const li = document.createElement("li");
-        li.id = habit.id;
-
-        if (habit.id === newlyAddedId) li.className = "fade-in-item";
-
-        const leftSide = document.createElement("div");
-        leftSide.style.display = "flex";
-        leftSide.style.alignItems = "center";
-
-        const arrowImg = document.createElement("img");
-        arrowImg.className = "checklist-arrow";
-        arrowImg.src = arrowSvgBase64;
+        li.style.display = "flex";
+        li.style.justifyContent = "space-between";
+        li.style.marginBottom = "5px";
 
         const textSpan = document.createElement("span");
         textSpan.innerText = habit.text;
-
-        leftSide.appendChild(arrowImg);
-        leftSide.appendChild(textSpan);
 
         const delBtn = document.createElement("button");
         delBtn.innerText = "✕";
         delBtn.style.border = "none";
         delBtn.style.background = "none";
         delBtn.style.cursor = "pointer";
-        delBtn.style.color = "#999";
         delBtn.onclick = () => removeGlobalHabit(habit.id);
 
-        li.appendChild(leftSide);
+        li.appendChild(textSpan);
         li.appendChild(delBtn);
         list.appendChild(li);
     });
 }
 
+function removeGlobalHabit(id) {
+    let globalHabits = JSON.parse(localStorage.getItem("globalHabits") || "[]");
+    globalHabits = globalHabits.filter(habit => habit.id !== id);
+    localStorage.setItem("globalHabits", JSON.stringify(globalHabits));
+    loadGlobalHabits();
+}
