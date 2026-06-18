@@ -123,29 +123,66 @@ function toggleStatsView() {
 function buildYearlyHealthGraph() {
     const datasetArray = new Array(12).fill(0);
     const countArray = new Array(12).fill(0);
+    
+    let totalDaysLogged = 0;
+    let totalChecklistsCompleted = 0;
+    let totalMoodDiff = 0;
+    let diffCount = 0;
+    let previousRating = null;
 
+    // Read and analyze chronological days to calculate summary data metrics
+    const keys = [];
     for (let k = 0; k < localStorage.length; k++) {
-        const keyString = localStorage.key(k);
-        if (keyString && keyString.startsWith(`${currentYear}-`)) {
-            const parts = keyString.split("-");
-            const monthIndex = parseInt(parts[1], 10) - 1;
-            const logItem = JSON.parse(localStorage.getItem(keyString));
-            if (logItem && logItem.rating !== undefined && logItem.rating !== "") {
-                datasetArray[monthIndex] += Number(logItem.rating);
-                countArray[monthIndex]++;
-            }
+        const key = localStorage.key(k);
+        if (key && key.startsWith(`${currentYear}-`)) {
+            keys.push(key);
         }
     }
+    keys.sort();
+
+    keys.forEach(keyString => {
+        const parts = keyString.split("-");
+        const monthIndex = parseInt(parts[1], 10) - 1;
+        const logItem = JSON.parse(localStorage.getItem(keyString));
+        
+        if (logItem) {
+            if (logItem.rating !== undefined && logItem.rating !== "") {
+                const currentRating = Number(logItem.rating);
+                datasetArray[monthIndex] += currentRating;
+                countArray[monthIndex]++;
+                totalDaysLogged++;
+
+                if (previousRating !== null) {
+                    totalMoodDiff += (currentRating - previousRating);
+                    diffCount++;
+                }
+                previousRating = currentRating;
+            }
+            if (logItem.habits) {
+                Object.values(logItem.habits).forEach(completed => {
+                    if (completed === true) totalChecklistsCompleted++;
+                });
+            }
+        }
+    });
 
     const container = document.getElementById("chartBarsContainer");
     if (!container) return;
     container.innerHTML = "";
+
+    let highestAvg = -1;
+    let highestMonthName = "-";
 
     shortMonthsArray.forEach((monthLabel, idx) => {
         const sumVal = datasetArray[idx];
         const count = countArray[idx];
         const average = count > 0 ? (sumVal / count).toFixed(1) : 0;
         const barHeightPercentage = (average / 10) * 100;
+
+        if (Number(average) > highestAvg && count > 0) {
+            highestAvg = Number(average);
+            highestMonthName = monthsArray[idx];
+        }
 
         const barWrapper = document.createElement("div");
         barWrapper.className = "custom-chart-bar-wrapper";
@@ -167,6 +204,16 @@ function buildYearlyHealthGraph() {
         barWrapper.appendChild(labelSpan);
         container.appendChild(barWrapper);
     });
+
+    // Inject metrics straight into widgets
+    document.getElementById("statDaysLogged").innerText = totalDaysLogged;
+    document.getElementById("statChecklistsDone").innerText = totalChecklistsCompleted;
+    document.getElementById("statBestMonth").innerText = highestMonthName;
+
+    const avgTrend = diffCount > 0 ? (totalMoodDiff / diffCount).toFixed(2) : "0.0";
+    const trendDisplay = document.getElementById("statTrendRate");
+    trendDisplay.innerText = (avgTrend > 0 ? "+" : "") + avgTrend;
+    trendDisplay.style.color = avgTrend >= 0 ? "#2b542b" : "#ff8080";
 }
 function openDayModal(dateKey) {
     selectedDateKey = dateKey;
