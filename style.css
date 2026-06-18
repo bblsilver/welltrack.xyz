@@ -84,7 +84,12 @@ body {
     font-weight: 600;
 }
 
-#navViewBtn {
+.header-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+#navViewBtn, #navStatsBtn {
     font-size: 1.4rem;
     cursor: pointer;
     background: var(--pastel-red);
@@ -92,11 +97,12 @@ body {
     padding: 8px 12px;
     border-radius: 8px;
     color: white;
-    transition: background 0.2s;
+    transition: background 0.2s, transform 0.1s;
 }
 
-#navViewBtn:hover {
+#navViewBtn:hover, #navStatsBtn:hover {
     background: var(--pastel-red-dark);
+    transform: scale(1.05);
 }
 
 .global-checklist-builder {
@@ -169,7 +175,7 @@ body {
     vertical-align: middle;
 }
 
-.month-wrapper h2 {
+.month-wrapper h2, .stats-wrapper h2 {
     margin: 0 0 15px 0;
     font-size: 1.3rem;
     color: var(--text-light);
@@ -234,6 +240,23 @@ body {
     border-color: var(--pastel-red);
 }
 
+/* Stats Chart Wrapper Styles */
+.stats-wrapper {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.chart-container {
+    position: relative;
+    width: 100%;
+    height: 340px;
+    background: #fafafa;
+    border-radius: 12px;
+    padding: 20px;
+    box-sizing: border-box;
+    border: 1px solid #eaeaea;
+}
+
 .modal-backdrop {
     position: fixed;
     top: 0;
@@ -286,7 +309,6 @@ body {
     accent-color: var(--pastel-red);
 }
 
-/* Beautiful Custom Checkbox Layout Style */
 .modal-habit-label {
     display: flex;
     align-items: center;
@@ -353,7 +375,6 @@ body {
     outline: none;
 }
 
-/* Light Pastel Green Save Button Layout */
 .save-modal-btn {
     width: 100%;
     background: var(--pastel-green);
