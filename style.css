@@ -122,7 +122,6 @@ body {
     color: var(--text-dark);
 }
 
-/* Unified input box layout bar style from image converter */
 .builder-inputs {
     display: flex;
     width: 100%;
@@ -143,6 +142,10 @@ body {
     font-family: inherit;
     height: 100%;
     box-sizing: border-box;
+}
+
+.builder-inputs input:focus {
+    border-color: var(--pastel-red);
 }
 
 .builder-inputs button {
@@ -177,6 +180,38 @@ body {
     border-radius: 8px;
     border: 1px solid #eee;
     font-size: 0.95rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    opacity: 1;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Global Arrow Icon in Creator List */
+.checklist-arrow {
+    width: 14px;
+    height: 14px;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+/* Animation Fade Classes */
+.fade-in-item {
+    animation: fadeIn 0.3s ease forwards;
+}
+
+.fade-out-item {
+    opacity: 0 !important;
+    transform: translateY(-5px);
+}
+
+.view-fade {
+    animation: fadeIn 0.4s ease forwards;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .month-wrapper h2 {
@@ -288,12 +323,19 @@ body {
 }
 
 .modal-section h4 {
-    margin: 0 0 10px 0;
+    margin: 0 0 12px 0;
     font-size: 1rem;
     color: var(--text-dark);
 }
 
-/* Custom Minimalist Slider Styling */
+/* Prettier Range Slider with Dynamic Pastel Red Track Fill */
+.slider-container {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
 .modal-section input[type="range"] {
     -webkit-appearance: none;
     appearance: none;
@@ -302,6 +344,7 @@ body {
     background: #ddd;
     border-radius: 3px;
     outline: none;
+    background: linear-gradient(to right, var(--pastel-red) 0%, var(--pastel-red) var(--slider-progress, 50%), #ddd var(--slider-progress, 50%));
 }
 
 .modal-section input[type="range"]::-webkit-slider-thumb {
@@ -312,11 +355,69 @@ body {
     border-radius: 50%;
     background: var(--pastel-red);
     cursor: pointer;
+    border: 2px solid white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
     transition: transform 0.1s;
 }
 
 .modal-section input[type="range"]::-webkit-slider-thumb:hover {
     transform: scale(1.2);
+}
+
+/* Beautiful Custom Checkbox Layout Style */
+.modal-habit-label {
+    display: flex;
+    align-items: center;
+    position: relative;
+    cursor: pointer;
+    padding: 6px 0;
+    font-size: 0.95rem;
+    user-select: none;
+}
+
+.modal-habit-label input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+}
+
+.custom-checkbox {
+    height: 20px;
+    width: 20px;
+    background-color: #eee;
+    border-radius: 6px;
+    margin-right: 12px;
+    display: inline-block;
+    position: relative;
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.modal-habit-label:hover input ~ .custom-checkbox {
+    background-color: #e2e2e2;
+    transform: scale(1.04);
+}
+
+.modal-habit-label input:checked ~ .custom-checkbox {
+    background-color: var(--pastel-red);
+}
+
+.custom-checkbox:after {
+    content: "";
+    position: absolute;
+    display: none;
+    left: 7px;
+    top: 3px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.modal-habit-label input:checked ~ .custom-checkbox:after {
+    display: block;
 }
 
 .modal-section textarea {
@@ -330,7 +431,6 @@ body {
     outline: none;
 }
 
-/* Light Pastel Green Save Button */
 .save-modal-btn {
     width: 100%;
     background: var(--pastel-green);
