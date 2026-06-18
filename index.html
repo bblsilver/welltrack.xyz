@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WellTrack - Personal Health Calendar</title>
-    <link rel="stylesheet" href="style.css?v=4.0">
-    <!-- Pulls in Chart.js engine securely via standard cdnjs link -->
-    <script src="https://cloudflare.com"></script>
+    <link rel="stylesheet" href="style.css?v=5.0">
 </head>
 <body>
 
@@ -22,14 +20,13 @@
         <header class="app-header">
             <h1 id="calendarTitle">WellTrack</h1>
             <div class="header-buttons">
-                <!-- New Analytics Navigation Switch Button -->
                 <button id="navStatsBtn" onclick="toggleStatsView()" title="View Health Graph">📊</button>
                 <button id="navViewBtn" onclick="toggleCalendarView()" title="Change View">📅</button>
             </div>
         </header>
 
         <section class="global-checklist-builder" id="checklistBuilderSection">
-            <h3>📋 Create Daily Habit Checklist</h3>
+            <h3>Create Daily Habit Checklist</h3>
             <div class="builder-inputs">
                 <input type="text" id="newHabitInput" placeholder="Add a habit (e.g., Drink Water)...">
                 <button onclick="addGlobalHabit()">Add Habit</button>
@@ -45,12 +42,9 @@
                 <div id="calendarGrid" class="calendar-grid"></div>
             </div>
 
-            <!-- New hidden visual screen canvas panel node for analytical chart injection -->
             <div id="statsView" class="stats-wrapper" style="display: none;">
                 <h2>Yearly Overview Metrics</h2>
-                <div class="chart-container">
-                    <canvas id="yearlyHealthChart"></canvas>
-                </div>
+                <div class="chart-container" id="chartBarsContainer"></div>
             </div>
         </main>
     </div>
@@ -79,6 +73,6 @@
         </div>
     </div>
 
-    <script src="script.js?v=4.0"></script>
+    <script src="script.js?v=5.0"></script>
 </body>
 </html>
