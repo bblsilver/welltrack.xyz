@@ -88,12 +88,20 @@ body {
 
 .header-buttons {
     display: flex;
-    gap: 10px;
+    gap: 12px;
+    align-items: center;
 }
 
-.header-btn-img {
-    width: 26px;
-    height: 26px;
+.header-btn-img-clock {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    display: block;
+}
+
+.header-btn-img-cal {
+    width: 25px;
+    height: 25px;
     object-fit: contain;
     display: block;
 }
@@ -101,7 +109,7 @@ body {
 #navViewBtn, #navStatsBtn {
     background: none !important;
     border: none !important;
-    padding: 4px !important;
+    padding: 2px !important;
     box-shadow: none !important;
     transform: none !important;
     cursor: pointer;
@@ -480,4 +488,3 @@ body {
 .save-modal-btn:hover {
     background: var(--pastel-green-dark);
 }
-
