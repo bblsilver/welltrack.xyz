@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WellTrack - Personal Health Calendar</title>
-    <link rel="stylesheet" href="style.css?v=7.0">
+    <link rel="stylesheet" href="style.css?v=8.0">
 </head>
 <body>
 
@@ -21,10 +21,10 @@
             <h1 id="calendarTitle">WellTrack</h1>
             <div class="header-buttons">
                 <button id="navStatsBtn" onclick="toggleStatsView()" title="View Health Graph">
-                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0MCIgc3Ryb2tlPSIjRkY5OTk5IiBzdHJva2Utd2lkdGg9IjgiIGZpbGw9Im5vbmUiLz48cGF0aCBkPSJNNTAgMjUgTDUwIDU1IEw3MCA2NSIgc3Ryb2tlPSIjRkY5OTk5IiBzdHJva2Utd2lkdGg9IjgiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgZmlsbD0ibm9uZSIvPjwvc3ZnPg==" class="header-btn-img">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0MCIgc3Ryb2tlPSIjRkY5OTk5IiBzdHJva2Utd2lkdGg9IjgiIGZpbGw9Im5vbmUiLz48cGF0aCBkPSJNNTAgMjUgTDUwIDU1IEw3MCA2NSIgc3Ryb2tlPSIjRkY5OTk5IiBzdHJva2Utd2lkdGg9IjgiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgZmlsbD0ibm9uZSIvPjwvc3ZnPg==" class="header-btn-img-clock">
                 </button>
                 <button id="navViewBtn" onclick="toggleCalendarView()" title="Change View">
-                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB4PSIyMCIgeT0iMjUiIHdpZHRoPSI2MCIgaGVpZ2h0PSI1NSIgcng9IjEwIiBmaWxsPSIjRkY5OTk5Ii8+PHJlY3QgeD0iMzAiIHk9IjE1IiB3aWR0aD0iOCIgaGVpZ2h0PSIxNSIgcng9IjIiIGZpbGw9IiNGRjk5OTkiLz48cmVjdCB4PSI2MiIgeT0iMTUiIHdpZHRoPSI4IiBoZWlnaHQ9IjE1IiByeD0iMiIgZmlsbD0iI0ZGOTk5OSIvPjxyZWN0IHg9IjI3IiB5PSI0MCIgd2lkdGg9IjQ2IiBoZWlnaHQ9IjMzIiByeD0iMiIgZmlsbD0id2hpdGUiLz48cmVjdCB4PSI1MCIgeT0iNTIiIHdpZHRoPSIxOCIgaGVpZ2h0PSIxNiIgZmlsbD0iI0ZGOTk5OSIvPjwvc3ZnPg==" class="header-btn-img">
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB4PSIyMCIgeT0iMjUiIHdpZHRoPSI2MCIgaGVpZ2h0PSI1NSIgcng9IjEwIiBmaWxsPSIjRkY5OTk5Ii8+PHJlY3QgeD0iMzAiIHk9IjE1IiB3aWR0aD0iOCIgaGVpZ2h0PSIxNSIgcng9IjIiIGZpbGw9IiNGRjk5OTkiLz48cmVjdCB4PSI2MiIgeT0iMTUiIHdpZHRoPSI4IiBoZWlnaHQ9IjE1IiByeD0iMiIgZmlsbD0iI0ZGOTk5OSIvPjxyZWN0IHg9IjI3IiB5PSI0MCIgd2lkdGg9IjQ2IiBoZWlnaHQ9IjMzIiByeD0iMiIgZmlsbD0id2hpdGUiLz48cmVjdCB4PSI1MCIgeT0iNTIiIHdpZHRoPSIxOCIgaGVpZ2h0PSIxNiIgZmlsbD0iI0ZGOTk5OSIvPjwvc3ZnPg==" class="header-btn-img-cal">
                 </button>
             </div>
         </header>
@@ -62,8 +62,8 @@
                             <span class="stat-lbl-txt">Tasks Completed</span>
                         </div>
                         <div class="stat-card-item">
-                            <span class="stat-num-val" id="statTrendRate">0.0</span>
-                            <span class="stat-lbl-txt">Day-over-Day Trend</span>
+                            <span class="stat-num-val" id="statCurrentStreak">0</span>
+                            <span class="stat-lbl-txt">Current Day Streak</span>
                         </div>
                         <div class="stat-card-item">
                             <span class="stat-num-val" id="statBestMonth">-</span>
@@ -99,6 +99,6 @@
         </div>
     </div>
 
-    <script src="script.js?v=7.0"></script>
+    <script src="script.js?v=8.0"></script>
 </body>
 </html>
