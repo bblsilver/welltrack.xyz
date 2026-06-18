@@ -10,12 +10,12 @@ const monthsArray = [
 const arrowSvgBase64 = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTguNSA1bDYgNi02IDZaIiBmaWxsPSIjZmY5OTk5IiBzdHJva2U9IiNmZjk5OTkiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9zdmc+";
 
 function enterApp() {
-    document.getElementById("welcomeOverlay").style.display = "none";
-    document.getElementById("appContainer").classList.remove("app-blurred");
+    const overlay = document.getElementById("welcomeOverlay");
+    const container = document.getElementById("appContainer");
+    if (overlay) overlay.style.display = "none";
+    if (container) container.classList.remove("app-blurred");
     renderMonthView(currentYear, currentMonth);
-    setTimeout(() => {
-        loadGlobalHabits();
-    }, 50);
+    setTimeout(loadGlobalHabits, 50);
 }
 
 function renderMonthView(year, month) {
@@ -113,25 +113,25 @@ function renderYearView() {
 
 function openDayModal(dateKey) {
     selectedDateKey = dateKey;
-    document.getElementById("modalDayTitle").innerText = `Log Health for ${dateKey}`;
+    
+    const title = document.getElementById("modalDayTitle");
+    if (title) title.innerText = `Log Health for ${dateKey}`;
     
     const slider = document.getElementById("dayRating");
     if (!slider) return;
     slider.value = 5;
     
-    const ratingValueDisplay = document.getElementById("ratingValue");
-    if (ratingValueDisplay) {
-        ratingValueDisplay.innerText = 5;
-    }
+    const display = document.getElementById("ratingValue");
+    if (display) display.innerText = 5;
     
     slider.oninput = function() {
-        const display = document.getElementById('ratingValue');
-        if (display) {
-            display.innerText = this.value;
-        }
+        const valDisplay = document.getElementById('ratingValue');
+        if (valDisplay) valDisplay.innerText = this.value;
     };
 
-    document.getElementById("dayNotes").value = "";
+    const notes = document.getElementById("dayNotes");
+    if (notes) notes.value = "";
+    
     renderModalChecklist();
 
     const savedData = localStorage.getItem(dateKey);
@@ -139,31 +139,29 @@ function openDayModal(dateKey) {
         const parsed = JSON.parse(savedData);
         if (parsed.rating !== undefined) {
             slider.value = parsed.rating;
-            if (ratingValueDisplay) {
-                ratingValueDisplay.innerText = parsed.rating;
-            }
+            if (display) display.innerText = parsed.rating;
         }
-        if (parsed.notes) {
-            document.getElementById("dayNotes").value = parsed.notes;
+        if (parsed.notes && notes) {
+            notes.value = parsed.notes;
         }
         if (parsed.habits) {
             setTimeout(() => {
                 const checks = document.querySelectorAll(".modal-habit-check");
                 checks.forEach(box => {
                     const id = box.getAttribute("data-id");
-                    if (parsed.habits[id]) {
-                        box.checked = true;
-                    }
+                    if (parsed.habits[id]) box.checked = true;
                 });
             }, 10);
         }
     }
 
-    document.getElementById("dayModal").style.display = "flex";
+    const modal = document.getElementById("dayModal");
+    if (modal) modal.style.display = "flex";
 }
 
 function closeDayModal() {
-    document.getElementById("dayModal").style.display = "none";
+    const modal = document.getElementById("dayModal");
+    if (modal) modal.style.display = "none";
 }
 
 function renderModalChecklist() {
@@ -172,7 +170,6 @@ function renderModalChecklist() {
     container.innerHTML = "";
 
     const globalHabits = JSON.parse(localStorage.getItem("globalHabits") || "[]");
-    
     if (globalHabits.length === 0) {
         container.innerHTML = "<p style='font-size:0.9rem; color:#666;'>No daily habits added yet.</p>";
         return;
@@ -206,8 +203,10 @@ function renderModalChecklist() {
 function saveDayLog() {
     if (!selectedDateKey) return;
 
-    const rating = document.getElementById("dayRating").value;
-    const notes = document.getElementById("dayNotes").value;
+    const slider = document.getElementById("dayRating");
+    const notes = document.getElementById("dayNotes");
+    const rating = slider ? slider.value : 5;
+    const notesValue = notes ? notes.value : "";
     const habits = {};
 
     const checks = document.querySelectorAll(".modal-habit-check");
@@ -218,7 +217,7 @@ function saveDayLog() {
 
     const dataToSave = {
         rating: rating,
-        notes: notes,
+        notes: notesValue,
         habits: habits
     };
 
@@ -242,7 +241,6 @@ function addGlobalHabit() {
     globalHabits.push(newHabit);
     localStorage.setItem("globalHabits", JSON.stringify(globalHabits));
     input.value = "";
-    
     loadGlobalHabits(newHabit.id);
 }
 
@@ -256,9 +254,7 @@ function loadGlobalHabits(newlyAddedId = null) {
         const li = document.createElement("li");
         li.id = habit.id;
 
-        if (habit.id === newlyAddedId) {
-            li.className = "fade-in-item";
-        }
+        if (habit.id === newlyAddedId) li.className = "fade-in-item";
 
         const leftSide = document.createElement("div");
         leftSide.style.display = "flex";
@@ -288,6 +284,3 @@ function loadGlobalHabits(newlyAddedId = null) {
     });
 }
 
-function removeGlobalHabit(id) {
-    const element = document.getElementById(id);
-    if (element) {
