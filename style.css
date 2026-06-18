@@ -3,6 +3,8 @@
     --pastel-red-dark: #ff8080;
     --pastel-green: #b3ffb3;
     --pastel-green-dark: #9ce69c;
+    --btn-gray: #7d858d;
+    --btn-gray-dark: #6c757d;
     --bg-color: #f4f6f8;
     --card-bg: #ffffff;
     --text-dark: #333333;
@@ -89,20 +91,28 @@ body {
     gap: 10px;
 }
 
+.header-btn-img {
+    width: 26px;
+    height: 26px;
+    object-fit: contain;
+    display: block;
+}
+
 #navViewBtn, #navStatsBtn {
-    font-size: 1.4rem;
+    background: none !important;
+    border: none !important;
+    padding: 4px !important;
+    box-shadow: none !important;
+    transform: none !important;
     cursor: pointer;
-    background: var(--pastel-red);
-    border: none;
-    padding: 8px 12px;
-    border-radius: 8px;
-    color: white;
-    transition: background 0.2s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s;
 }
 
 #navViewBtn:hover, #navStatsBtn:hover {
-    background: var(--pastel-red-dark);
-    transform: scale(1.05);
+    opacity: 0.7;
 }
 
 .global-checklist-builder {
@@ -290,7 +300,6 @@ body {
     margin-bottom: 4px;
 }
 
-/* New Summary Statistics Widget Layout Styling */
 .summary-stats-box {
     background: #fafafa;
     border: 1px solid #eaeaea;
@@ -471,3 +480,4 @@ body {
 .save-modal-btn:hover {
     background: var(--pastel-green-dark);
 }
+
