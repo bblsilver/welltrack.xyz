@@ -1,6 +1,7 @@
 let currentYear = new Date().getFullYear();
 let currentMonth = new Date().getMonth();
 let selectedDateKey = null;
+let healthChartInstance = null;
 
 const monthsArray = [
     "January", "February", "March", "April", "May", "June",
@@ -21,6 +22,8 @@ function renderMonthView(year, month) {
     currentMonth = month;
     
     document.getElementById("yearView").style.display = "none";
+    document.getElementById("statsView").style.display = "none";
+    document.getElementById("checklistBuilderSection").style.display = "block";
     document.getElementById("monthView").style.display = "block";
     document.getElementById("currentMonthYear").innerText = `${monthsArray[month]} ${year}`;
 
@@ -68,6 +71,10 @@ function getColorByRating(rating) {
 function toggleCalendarView() {
     const yearView = document.getElementById("yearView");
     const monthView = document.getElementById("monthView");
+    const statsView = document.getElementById("statsView");
+
+    statsView.style.display = "none";
+    document.getElementById("checklistBuilderSection").style.display = "block";
 
     if (yearView.style.display === "none") {
         monthView.style.display = "none";
@@ -93,6 +100,86 @@ function renderYearView() {
     });
 }
 
+function toggleStatsView() {
+    const statsView = document.getElementById("statsView");
+    const monthView = document.getElementById("monthView");
+    const yearView = document.getElementById("yearView");
+    const builder = document.getElementById("checklistBuilderSection");
+
+    if (statsView.style.display === "none") {
+        monthView.style.display = "none";
+        yearView.style.display = "none";
+        builder.style.display = "none";
+        statsView.style.display = "block";
+        buildYearlyHealthGraph();
+    } else {
+        statsView.style.display = "none";
+        builder.style.display = "block";
+        monthView.style.display = "block";
+        renderMonthView(currentYear, currentMonth);
+    }
+}
+
+function buildYearlyHealthGraph() {
+    const datasetArray = new Array(12).fill(0);
+    const countArray = new Array(12).fill(0);
+
+    for (let k = 0; k < localStorage.length; k++) {
+        const keyString = localStorage.key(k);
+        if (keyString && keyString.startsWith(`${currentYear}-`)) {
+            const monthIndex = parseInt(keyString.split("-")[1], 10) - 1;
+            const logItem = JSON.parse(localStorage.getItem(keyString));
+            if (logItem && logItem.rating !== undefined && logItem.rating !== "") {
+                datasetArray[monthIndex] += Number(logItem.rating);
+                countArray[monthIndex]++;
+            }
+        }
+    }
+
+    const compiledAverages = datasetArray.map((sumVal, idx) => {
+        return countArray[idx] > 0 ? (sumVal / countArray[idx]).toFixed(1) : 0;
+    });
+
+    const ctxNode = document.getElementById('yearlyHealthChart').getContext('2d');
+    
+    if (healthChartInstance) {
+        healthChartInstance.destroy();
+    }
+
+    healthChartInstance = new Chart(ctxNode, {
+        type: 'bar',
+        data: {
+            labels: monthsArray,
+            datasets: [{
+                label: 'Average Day Rating (0 - 10)',
+                data: compiledAverages,
+                backgroundColor: '#ff9999',
+                borderColor: '#ff8080',
+                borderWidth: 1,
+                borderRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    min: 0,
+                    max: 10,
+                    grid: { color: '#eaeaea' },
+                    ticks: { color: '#666' }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { color: '#666' }
+                }
+            },
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+}
 function openDayModal(dateKey) {
     selectedDateKey = dateKey;
     document.getElementById("modalDayTitle").innerText = `Log Health for ${dateKey}`;
