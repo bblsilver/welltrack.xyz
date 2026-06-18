@@ -89,17 +89,14 @@ body {
 }
 
 #navViewBtn {
-    font-size: 1.3rem;
+    font-size: 0.9rem;
     cursor: pointer;
     background: var(--pastel-red);
     border: none;
-    padding: 10px 14px;
+    padding: 10px 16px;
     border-radius: 8px;
     color: white;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    font-weight: 600;
     transition: background 0.2s, transform 0.1s;
 }
 
@@ -326,7 +323,6 @@ body {
     color: var(--text-dark);
 }
 
-/* Safe, standardized accent color matching for custom tracks and thumbs */
 .modal-section input[type="range"] {
     width: 100%;
     height: 6px;
