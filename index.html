@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WellTrack - Personal Health Calendar</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- 1. The Welcome Screen Blur Overlay -->
+    <div id="welcomeOverlay" class="welcome-overlay" onclick="enterApp()">
+        <div class="welcome-box">
+            <h1>WellTrack</h1>
+            <p>Click anywhere to enter your health space</p>
+        </div>
+    </div>
+
+    <!-- Main Content Wrapper (will unblur once entered) -->
+    <div id="appContainer" class="app-container app-blurred">
+        
+        <!-- Header Navigation Bar -->
+        <header class="app-header">
+            <h1 id="calendarTitle">WellTrack</h1>
+            <button id="navViewBtn" onclick="toggleCalendarView()" title="Change View">📅</button>
+        </header>
+
+        <!-- Global Checklist Setup Block (Creates list for all days) -->
+        <section class="global-checklist-builder">
+            <h3>📋 Create Daily Habit Checklist</h3>
+            <div class="builder-inputs">
+                <input type="text" id="newHabitInput" placeholder="Add a habit (e.g., Drink Water)...">
+                <button onclick="addGlobalHabit()">Add Habit</button>
+            </div>
+            <ul id="globalHabitList"></ul>
+        </section>
+
+        <!-- 2. The Views (Year View vs Month View) -->
+        <main class="calendar-workspace">
+            <!-- Year Navigation Screen -->
+            <div id="yearView" class="year-grid" style="display: none;"></div>
+
+            <!-- Single Month Operational Screen -->
+            <div id="monthView" class="month-wrapper">
+                <h2 id="currentMonthYear">Loading...</h2>
+                <div id="calendarGrid" class="calendar-grid"></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 3. The Click Pop-out Modal (Day Logger) -->
+    <div id="dayModal" class="modal-backdrop" style="display: none;">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeDayModal()">&times;</span>
+            <h3 id="modalDayTitle">Log Health</h3>
+
+            <!-- 1-10 Rating Variable Slider Selector -->
+            <div class="modal-section">
+                <label for="dayRating">Rate your day (0 - 10): <b id="ratingValue">5</b></label>
+                <input type="range" id="dayRating" min="0" max="10" value="5" oninput="document.getElementById('ratingValue').innerText = this.value">
+            </div>
+
+            <!-- Checklist Injection Node -->
+            <div class="modal-section">
+                <h4>Daily Tracker Checklist:</h4>
+                <div id="modalChecklist"></div>
+            </div>
+
+            <!-- Health Journal Notes Area -->
+            <div class="modal-section">
+                <h4>Daily Health Notes:</h4>
+                <textarea id="dayNotes" rows="4" placeholder="How did you feel today? Any symptoms or achievements?"></textarea>
+            </div>
+
+            <button class="save-modal-btn" onclick="saveDayLog()">Save Entry</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
