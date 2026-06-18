@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WellTrack - Personal Health Calendar</title>
-    <link rel="stylesheet" href="style.css?v=5.0">
+    <link rel="stylesheet" href="style.css?v=6.0">
 </head>
 <body>
 
@@ -43,8 +43,32 @@
             </div>
 
             <div id="statsView" class="stats-wrapper" style="display: none;">
-                <h2>Yearly Overview Metrics</h2>
+                <h2>Monthly Average Health Ratings (0-10)</h2>
                 <div class="chart-container" id="chartBarsContainer"></div>
+
+                <!-- New Analytics Data Summary Box Grid Panel widget -->
+                <div class="summary-stats-box">
+                    <h3>Wellness Analytics Overview</h3>
+                    <div class="stats-grid-box">
+                        <div class="stat-card-item">
+                            <span class="stat-num-val" id="statDaysLogged">0</span>
+                            <span class="stat-lbl-txt">Total Days Logged</span>
+                        </div>
+                        <div class="stat-card-item">
+                            <span class="stat-num-val" id="statChecklistsDone">0</span>
+                            <span class="stat-lbl-txt">Tasks Completed</span>
+                        </div>
+                        <div class="stat-card-item">
+                            <span class="stat-num-val" id="statTrendRate">0.0</span>
+                            <span class="stat-lbl-txt">Day-over-Day Trend</span>
+                        </div>
+                        <div class="stat-card-item">
+                            <span class="stat-num-val" id="statBestMonth">-</span>
+                            <span class="stat-lbl-txt">Highest Mood Month</span>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </main>
     </div>
@@ -73,6 +97,6 @@
         </div>
     </div>
 
-    <script src="script.js?v=5.0"></script>
+    <script src="script.js?v=6.0"></script>
 </body>
 </html>
